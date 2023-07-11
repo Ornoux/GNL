@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: npatron <npatron@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/07 16:08:04 by npatron           #+#    #+#             */
-/*   Updated: 2023/05/08 15:09:22 by npatron          ###   ########.fr       */
+/*   Created: 2023/05/08 14:21:54 by npatron           #+#    #+#             */
+/*   Updated: 2023/05/08 14:51:08 by npatron          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*create_line(char *save, char *buffer)
 {
@@ -88,26 +88,15 @@ char	*read_file(int fd, char *save)
 
 char	*get_next_line(int fd)
 {
-	static char	*save;
+	static char	*save[OPEN_MAX];
 	char		*dest;
 
 	if (fd == -1 || BUFFER_SIZE <= 0)
 		return (NULL);
-	save = read_file(fd, save);
-	if (!save)
+	save[fd] = read_file(fd, save[fd]);
+	if (!save[fd])
 		return (NULL);
-	dest = build_line(save);
-	save = build_next(save);
+	dest = build_line(save[fd]);
+	save[fd] = build_next(save[fd]);
 	return (dest);
-}
-
-int	main(void)
-{
-	int	fd;
-
-	fd = open("test.txt", O_RDONLY);
-	printf("1st : %s\n", get_next_line(fd));
-	printf("2nd : %s\n", get_next_line(fd));
-	close(fd);
-	return (0);
 }
